@@ -16,7 +16,8 @@ venv/
 *.log
 
 # Data outputs
-/output/
+/output/*
+!/output/.gitkeep
 
 # Local environment variables (never commit actual secrets)
 .env
