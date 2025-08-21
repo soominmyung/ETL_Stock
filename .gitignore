@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# Virtual environments
+.env/
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Data outputs
+/output/
+
+# Local environment variables (never commit actual secrets)
+.env
