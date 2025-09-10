@@ -65,7 +65,7 @@ python src/merge.py
 python src/check_output.py
 ```
 
-### 4. (Optional) Load into SQL Server
+### 4. Load into SQL Server
 1. Copy `.env.example` → `.env` and fill in your MSSQL connection info:
    ```
    MSSQL_URL=jdbc:sqlserver://<HOST>:<PORT>;databaseName=<DB>;encrypt=false
