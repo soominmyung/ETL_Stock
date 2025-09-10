@@ -11,6 +11,7 @@ This project demonstrates an end-to-end ETL pipeline for processing historical s
 - Provide simple validation scripts to check record counts and schema consistency
 
 ## Project Structure
+```
 etl_project/
 │── README.md
 │── requirements.txt
@@ -26,7 +27,7 @@ etl_project/
     ├── writer.py        # Load dataset into SQL Server
     ├── check_output.py  # Validation of schema and row counts
     └── utils.py         # Spark session setup and shared utilities
-
+```
 ## Setup
 1. Install dependencies
    pip install -r requirements.txt
