@@ -77,6 +77,4 @@ python src/check_output.py
 2. Run:
    ```bash
    python src/writer.py
-   ```
-
-> The `.env` file must **not** be committed. Only `.env.example` should be shared.
+   ``
