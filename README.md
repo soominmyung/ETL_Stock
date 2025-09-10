@@ -2,6 +2,13 @@
 
 This project demonstrates an end-to-end ETL pipeline for processing historical stock data. It was originally created to replace error-prone manual Excel logging with a reproducible and scalable process using PySpark and SQL Server.
 
+## Why this project
+In SAP 9.3 there was no native function to keep daily stock history. As a workaround, the purchasing team had to open SAP each day, copy the stock levels into Excel, and save CSV logs. This manual process depended entirely on a single staff member, was time-consuming, and prone to input errors. The logs were also stored in a format that was difficult to combine with other systems. Issues included missing records, duplicated item codes with different stock levels, and unrealistic jumps in stock values (e.g. from zero to thousands in a day).
+
+Other teams had to request data from the purchasing staff whenever they needed insights, which meant further manual processing, delays, and repeated errors. Given the scale of a £78M turnover business handling thousands of SKUs moving in and out daily, capturing snapshots during working hours introduced significant inconsistencies.
+
+To solve this, I discussed with purchasing, inventory, and related teams how to handle problematic records. Based on agreed rules, I built this project to generate standardised daily snapshots in the company database. The snapshots are written in a consistent schema that is both human-readable and system-friendly. An MSSQL Agent job was created to run T-SQL daily at 23:00, ensuring that stock levels are captured automatically outside business hours. This reduced manual workload, removed errors, and provided reliable daily stock history for the first time.
+
 ## Features
 - Read yearly Excel files and standardise them into a consistent schema
 - Clean and transform stock records (dates, numeric types, trimming, handling nulls)
@@ -84,11 +91,7 @@ Validation is built into the workflow through check_output.py and utility functi
 
 These checks provide early detection of schema drift, missing data, or anomalies in stock records.
 
-## Why this project / Next steps
-In SAP 9.3 there was no native function to keep daily stock history. As a workaround, the purchasing team had to open SAP each day, copy the stock levels into Excel, and save CSV logs. This manual process depended entirely on a single staff member, was time-consuming, and prone to input errors. The logs were also stored in a format that was difficult to combine with other systems. Issues included missing records, duplicated item codes with different stock levels, and unrealistic jumps in stock values (e.g. from zero to thousands in a day).
+## Next steps
+With the reliable daily stock history produced by this project, I built Tableau dashboards that combined sales and stock trends for the first time. This enabled forward-looking analysis, including early detection of products at risk of going out of stock.  
 
-Other teams had to request data from the purchasing staff whenever they needed insights, which meant further manual processing, delays, and repeated errors. Given the scale of a £78M turnover business handling thousands of SKUs moving in and out daily, capturing snapshots during working hours introduced significant inconsistencies.
-
-To solve this, I discussed with purchasing, inventory, and related teams how to handle problematic records. Based on agreed rules, I built this project to generate standardised daily snapshots in the company database. The snapshots are written in a consistent schema that is both human-readable and system-friendly. An MSSQL Agent job was created to run T-SQL daily at 23:00, ensuring that stock levels are captured automatically outside business hours. This reduced manual workload, removed errors, and provided reliable daily stock history for the first time.
-
-As next steps, this dataset can be connected directly to BI dashboards (Tableau, Power BI) to provide managers and other teams with immediate visibility into stock trends, out-of-stock risks, and slow-moving items without depending on manual reporting.
+Given that importing goods from Korea takes around four months by sea, these dashboards allowed proactive replenishment planning. By anticipating stock-outs in advance, the company prevented potential revenue loss and minimised missed sales opportunities, turning raw ETL outputs into measurable business impact.
