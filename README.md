@@ -80,10 +80,3 @@ python src/check_output.py
    ```
 
 > The `.env` file must **not** be committed. Only `.env.example` should be shared.
-
----
-
-## Notes
-- `output/` is ignored in git (via `.gitignore`). The `.gitkeep` ensures the folder appears in the repository without including large Parquet files.
-- SparkUI may bind to ports like `4040`, `4041`, etc. This is normal and does not affect execution.
-- This repository is intended as a portfolio project to showcase ETL, PySpark, and data engineering practices.
