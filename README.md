@@ -2,12 +2,16 @@
 
 This project demonstrates an end-to-end ETL pipeline for processing historical stock data. It was originally created to replace error-prone manual Excel logging with a reproducible and scalable process using PySpark and SQL Server.
 
+<br>
+
 ## Why this project
 In SAP 9.3 there was no native function to keep daily stock history. As a workaround, the purchasing team had to open SAP each day, copy the stock levels into Excel, and save CSV logs. This manual process depended entirely on a single staff member, was time-consuming, and prone to input errors. The logs were also stored in a format that was difficult to combine with other systems. Issues included missing records, duplicated item codes with different stock levels, and unrealistic jumps in stock values (e.g. from zero to thousands in a day).
 
 Other teams had to request data from the purchasing staff whenever they needed insights, which meant further manual processing, delays, and repeated errors. Given the scale of a £78M turnover business handling thousands of SKUs moving in and out daily, capturing snapshots during working hours introduced significant inconsistencies.
 
 To solve this, I discussed with purchasing, inventory, and related teams how to handle problematic records. Based on agreed rules, I built this project to generate standardised daily snapshots in the company database. The snapshots are written in a consistent schema that is both human-readable and system-friendly. An MSSQL Agent job was created to run T-SQL daily at 23:00, ensuring that stock levels are captured automatically outside business hours. This reduced manual workload, removed errors, and provided reliable daily stock history for the first time.
+
+<br>
 
 ## Features
 - Read yearly Excel files and standardise them into a consistent schema
@@ -16,6 +20,8 @@ To solve this, I discussed with purchasing, inventory, and related teams how to 
 - Merge multiple yearly datasets into a single consolidated dataset
 - Optionally load the dataset into SQL Server for reporting and analysis
 - Provide simple validation scripts to check record counts and schema consistency
+
+<br>
 
 ## Project Structure
 ```
@@ -35,6 +41,9 @@ etl_project/
     ├── check_output.py  # Validation of schema and row counts
     └── utils.py         # Spark session setup and shared utilities
 ```
+
+<br>
+
 ## Setup
 1. Install dependencies
    pip install -r requirements.txt
@@ -42,6 +51,8 @@ etl_project/
 2. Prepare Java and Spark runtime
 
 3. If loading into SQL Server, download the MSSQL JDBC driver and configure environment variables in .env
+
+<br>
 
 ## Usage
 1. Process a single year Excel file
@@ -63,6 +74,8 @@ etl_project/
    Then run:
    python src/writer.py
 
+<br>
+
 ## Example Schema
 The cleaned and standardised dataset written to Parquet and optionally SQL Server contains the following columns:
 
@@ -79,6 +92,8 @@ RecordDate   | date      | Date of record, converted to yyyy-MM-dd format
 
 This schema is generated in reader.py and maintained consistently in downstream steps (check_output.py, writer.py).
 
+<br>
+
 ## Data Quality Checks
 Validation is built into the workflow through check_output.py and utility functions in utils.py. The following checks are supported:
 
@@ -90,6 +105,8 @@ Validation is built into the workflow through check_output.py and utility functi
 - Date standardisation: All RecordDate values are parsed and reformatted consistently with utils.format_date_col.
 
 These checks provide early detection of schema drift, missing data, or anomalies in stock records.
+
+<br>
 
 ## Next steps
 With the reliable daily stock history produced by this project, I built Tableau dashboards that combined sales and stock trends for the first time. This enabled forward-looking analysis, including early detection of products at risk of going out of stock.  
