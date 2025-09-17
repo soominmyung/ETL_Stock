@@ -1,5 +1,8 @@
 # Stock ETL Project
 
+## Built with PySpark ETL, this project replaced error-prone Excel logs and delivered the first automated daily stock history for a £78M business
+### _Key stacks: PySpark, ETL, SQL, MSSQL Agent, Parquet_
+
 This project demonstrates an end-to-end ETL pipeline for processing historical stock data. It was originally created to replace error-prone manual Excel logging with a reproducible and scalable process using PySpark and SQL Server.
 
 <br>
