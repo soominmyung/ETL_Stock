@@ -17,9 +17,10 @@ To solve this, I discussed with purchasing, inventory, and related teams how to 
 <br>
 
 ## Features
-- Read yearly Excel files and standardise them into a consistent schema
-- Clean and transform stock records (dates, numeric types, trimming, handling nulls)
-- Store outputs in Parquet format partitioned by year
+- Read yearly Excel files with pandas and standardise headers/columns into a consistent schema
+- Write to Parquet staging files to fix schema before Spark processing
+- Use PySpark to reshape, clean, deduplicate, and handle outliers/nulls
+- Store curated outputs in Parquet format partitioned by year
 - Merge multiple yearly datasets into a single consolidated dataset
 - Optionally load the dataset into SQL Server for reporting and analysis
 - Provide simple validation scripts to check record counts and schema consistency
@@ -38,7 +39,7 @@ etl_project/
 ├── output/              # Parquet outputs
 │   └── .gitkeep
 └── src/
-    ├── reader.py        # Excel → Parquet conversion
+    ├── reader.py        # Read yearly stock Excel files with pandas → Parquet staging → PySpark cleaning & final Parquet
     ├── merge.py         # Merge multiple Parquet files
     ├── writer.py        # Load dataset into SQL Server
     ├── check_output.py  # Validation of schema and row counts
@@ -50,7 +51,7 @@ etl_project/
 ## Setup
 1. Install dependencies
    pip install -r requirements.txt
-
+   Dependencies include pandas, pyarrow, pyspark, openpyxl, python-dotenv.
 2. Prepare Java and Spark runtime
 
 3. If loading into SQL Server, download the MSSQL JDBC driver and configure environment variables in .env
