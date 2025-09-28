@@ -70,6 +70,11 @@ def run(year: int, abs_jump: float, rel_jump: float) -> None:
     first_col = filtered_data.columns[0]
     filtered_data = filtered_data.drop_duplicates().drop_duplicates(subset=first_col, keep="first")
 
+    # Force numeric conversion on known numeric columns
+    for c in ["OnHand", "IsCommited", "OnOrder", "AvgPrice"]:
+        if c in filtered_data.columns:
+            filtered_data[c] = pd.to_numeric(filtered_data[c], errors="coerce")
+
     filtered_data.to_parquet(parquet_stage_path, index=False)
     log(f"wrote staged Parquet: {parquet_stage_path}")
 
