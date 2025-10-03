@@ -117,7 +117,11 @@ def run(year: int, abs_jump: float, rel_jump: float) -> None:
     )
 
     # Remove duplicates on the business key
-    w_dup_key = Window.partitionBy("ItemCode", "WhsCode", "RecordDate").orderBy("OnHand")
+    w_dup_key = (
+        Window
+        .partitionBy("ItemCode", "WhsCode", "RecordDate")
+        .orderBy(F.col("OnHand").desc_nulls_last())
+    )
     final_df = final_df.withColumn("row_num", row_number().over(w_dup_key)).filter(col("row_num") == 1).drop("row_num")
 
     # Standardise date
