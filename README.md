@@ -113,67 +113,63 @@ These checks provide early detection of schema drift, missing data, or anomalies
 <br>
 
 ## Data Cleaning Process
-### Pandas Stage (Excel → Parquet Staging)
+### A) Pandas Stage (Excel → Parquet Staging)
 
-#### Excel Load and Whitespace Removal
+#### - Excel Load and Whitespace Removal
 After loading the Excel file, all string cells were stripped of leading and trailing spaces while preserving NaN values.
 This prevents column mismatches and join errors caused by hidden spaces in headers or cell values.
 
-#### Valid Column Selection
+#### - Valid Column Selection
 The first column was always retained, while other columns were kept only if they met all of the following conditions:
 
-#### Non-empty string
-
-#### Not following the “Unnamed” pattern
-
-#### Not composed solely of digits
+#### - Non-empty string, Not following the “Unnamed” pattern, Not composed solely of digits
 This filters out meaningless or automatically generated headers, ensuring schema stability.
 
-#### Duplicate Removal
+#### - Duplicate Removal
 Duplicates were removed twice: once across the entire DataFrame and once based on the first column.
 This step eliminates redundant rows with identical **item codes**, preventing key conflicts in later processes.
 
-#### Numeric Column Enforcement
+#### - Numeric Column Enforcement
 Columns such as OnHand, IsCommited, OnOrder, and AvgPrice were converted to numeric types.
 Any non-convertible values were set to null to prevent type inconsistency and arithmetic errors.
 
-#### Staging as Parquet
+#### - Staging as Parquet
 The cleaned result was saved as a Parquet file to fix the schema before PySpark processing.
 This ensures consistent column types and structures during Spark reads.
 
-### PySpark Stage (Parquet → Cleaned Dataset)
+### B) PySpark Stage (Parquet → Cleaned Dataset)
 
-#### Wide-to-Long Transformation
+#### - Wide-to-Long Transformation
 Columns containing “Date” were used as pivot points to identify warehouse columns.
 These were stacked to form a vertical schema of ItemCode, WhsCode, OnHand, and RecordDate.
 This unifies daily snapshots into one consistent format.
 
-#### Base Structure Cleaning
+#### - Base Structure Cleaning
 Rows missing key columns were removed.
 If OnHand contained the string “DC”, the corresponding row was marked as invalid (ValidFor = 'N') and excluded.
 OnHand was converted to float, and rows with zero values were dropped.
 Missing IsCommited, OnOrder, and AvgPrice values were filled with 0.
 This standardises invalid entries and assigns consistent defaults.
 
-#### Deduplication by Business Keys
+#### - Deduplication by Business Keys
 Duplicates were removed using a window function over (ItemCode, WhsCode, RecordDate), keeping only the most meaningful record.
 This standardises multiple entries for the same item and warehouse on the same day.
 
-#### Date Standardisation
+#### - Date Standardisation
 All date strings were parsed and reformatted to yyyy-MM-dd before casting to proper date type.
 This enforces a consistent date format for sorting and window operations.
 
-#### Missing Value and Outlier Handling
+#### - Missing Value and Outlier Handling
 Within each (ItemCode, WhsCode) partition, previous and next valid values were computed chronologically.
 If the absolute change exceeded the defined threshold or the relative rate of change was too high, it was flagged as an outlier.
 Missing or outlier values were replaced with the previous valid observation, or the next one if unavailable.
 This preserves time-series continuity without creating synthetic weekend or non-working-day rows.
 
-#### Final Deduplication and Default Completion
+#### - Final Deduplication and Default Completion
 After correction, a secondary deduplication ensured unique keys.
 Any remaining nulls in IsCommited, OnOrder, AvgPrice, or ValidFor were filled with their default values.
 
-#### Final Column Selection and Save
+#### - Final Column Selection and Save
 Only the standard schema columns were retained, and the cleaned dataset was written back to Parquet.
 The result is a consistent, analysis-ready dataset ready for merging and SQL Server loading.
 
