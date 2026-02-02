@@ -5,6 +5,9 @@
 
 This project demonstrates an end-to-end ETL pipeline for processing historical stock data. It was originally created to replace error-prone manual Excel logging with a reproducible and scalable process using PySpark and SQL Server.
 
+
+<img width="1061" height="586" alt="Stock-ETL" src="https://github.com/user-attachments/assets/019d6a96-e595-4ab3-8b21-1a3967f75c96" />
+
 <br>
 
 ## Why this project
